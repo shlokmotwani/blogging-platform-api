@@ -1,9 +1,6 @@
 package com.example.blogging_platform.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity
+@Entity(name = "posts")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,5 +16,7 @@ public class Post {
     private String title;
     private String content;
     private String category;
+
+    @ManyToMany
     private List<Tag> tags;
 }
