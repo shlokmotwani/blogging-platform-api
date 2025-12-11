@@ -1,5 +1,6 @@
 package com.example.blogging_platform.services;
 
+import com.example.blogging_platform.dtos.PostPatchDTO;
 import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
 
@@ -10,6 +11,6 @@ public interface PostService {
     Post getPostById(Long id) throws PostNotFoundException;
     List<Post> getAllPosts();
     Post updatePost(Long id, Post post);
-    Post patchPost(Long id, Post post);
+    Post patchPost(Long id, PostPatchDTO postPatchDTO) throws PostNotFoundException;
     void deletePost(Long id);
 }

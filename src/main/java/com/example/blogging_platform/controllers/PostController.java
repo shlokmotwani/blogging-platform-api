@@ -1,6 +1,7 @@
 package com.example.blogging_platform.controllers;
 
 import com.example.blogging_platform.dtos.PostCreateDTO;
+import com.example.blogging_platform.dtos.PostPatchDTO;
 import com.example.blogging_platform.dtos.PostResponseDTO;
 import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.exceptions.PostNotFoundException;
@@ -54,8 +55,9 @@ public class PostController {
     }
 
     @PatchMapping("/{id}")
-    public Post patchPost(@PathVariable("id") Long id, @RequestBody Post post){
-        return null;
+    public PostResponseDTO patchPost(@PathVariable("id") Long id, @RequestBody PostPatchDTO postPatchDTO) throws PostNotFoundException {
+        Post savedPost =  blogPostService.patchPost(id, postPatchDTO);
+        return PostMapper.toResponseDTO(savedPost);
     }
 
     @DeleteMapping("/{id}")
