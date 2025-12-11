@@ -6,6 +6,7 @@ import com.example.blogging_platform.repositories.BlogPostRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -32,8 +33,8 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public Post getAllPosts() {
-        return null;
+    public List<Post> getAllPosts() {
+        return blogPostRepository.findAll();
     }
 
     @Override

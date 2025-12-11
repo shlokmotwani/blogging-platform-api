@@ -4,6 +4,10 @@ import com.example.blogging_platform.dtos.PostCreateDTO;
 import com.example.blogging_platform.dtos.PostResponseDTO;
 import com.example.blogging_platform.models.Post;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class PostMapper {
 
     public static Post toEntity(PostCreateDTO dto){
@@ -24,5 +28,9 @@ public class PostMapper {
         dto.setTags(entity.getTags());
 
         return dto;
+    }
+
+    public static List<PostResponseDTO> toListOfPostResponseDTO(List<Post> posts){
+        return posts.stream().map(post -> toResponseDTO(post)).collect(Collectors.toList());
     }
 }

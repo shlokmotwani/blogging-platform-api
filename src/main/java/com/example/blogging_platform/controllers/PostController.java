@@ -8,6 +8,8 @@ import com.example.blogging_platform.services.BlogPostService;
 import com.example.blogging_platform.utilities.PostMapper;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/posts")
 public class PostController {
@@ -35,8 +37,9 @@ public class PostController {
     }
 
     @GetMapping()
-    public Post getAllPosts(){
-        return null;
+    public List<PostResponseDTO> getAllPosts(){
+        List<Post> posts = blogPostService.getAllPosts();
+        return PostMapper.toListOfPostResponseDTO(posts);
     }
 
     @PutMapping("/{id}")
