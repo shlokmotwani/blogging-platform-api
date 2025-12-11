@@ -60,6 +60,6 @@ public class PostController {
 
     @DeleteMapping("/{id}")
     public void deletePost(@PathVariable("id") Long id){
-        return;
+        blogPostService.deletePost(id);
     }
 }

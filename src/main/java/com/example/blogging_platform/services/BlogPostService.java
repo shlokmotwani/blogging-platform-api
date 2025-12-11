@@ -48,7 +48,7 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public Post deletePost(Long id) {
-        return null;
+    public void deletePost(Long id) {
+        blogPostRepository.deleteById(id);
     }
 }
