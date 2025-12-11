@@ -6,6 +6,7 @@ import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
 import com.example.blogging_platform.repositories.BlogPostRepository;
 import com.example.blogging_platform.utilities.PostMapper;
+import org.apache.coyote.BadRequestException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,10 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public Post createPost(Post post) {
+    public Post createPost(Post post) throws BadRequestException {
+        if(post.getTitle() == null || post.getContent() == null){
+            throw new BadRequestException(String.format("Invalid input"));
+        }
         return blogPostRepository.save(post);
     }
 
@@ -77,7 +81,11 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public void deletePost(Long id) {
+    public void deletePost(Long id) throws PostNotFoundException {
+        Optional<Post> postOptional =  blogPostRepository.findById(id);
+        if(postOptional.isEmpty()){
+            throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
+        }
         blogPostRepository.deleteById(id);
     }
 }
