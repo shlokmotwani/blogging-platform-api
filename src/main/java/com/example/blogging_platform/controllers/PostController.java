@@ -2,6 +2,7 @@ package com.example.blogging_platform.controllers;
 
 import com.example.blogging_platform.dtos.PostCreateDTO;
 import com.example.blogging_platform.dtos.PostResponseDTO;
+import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
 import com.example.blogging_platform.services.BlogPostService;
@@ -23,10 +24,9 @@ public class PostController {
     public PostResponseDTO createPost(@RequestBody PostCreateDTO postCreateDTO){
         // DTO -> Entity
         Post postEntity = PostMapper.toEntity(postCreateDTO);
-        System.out.println(postEntity);
         // Entity -> gets saved in the DB
         Post savedPost = blogPostService.createPost(postEntity);
-        System.out.println(savedPost);
+
         return PostMapper.toResponseDTO(savedPost);
     }
 
@@ -43,8 +43,14 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public Post updatePost(@PathVariable("id") Long id, @RequestBody Post post){
-        return null;
+    public PostResponseDTO updatePost(@PathVariable("id") Long id, @RequestBody PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
+        Post postFromDB = blogPostService.getPostById(id);
+        postFromDB.setTitle(postUpdateDTO.getTitle());
+        postFromDB.setContent(postUpdateDTO.getContent());
+        postFromDB.setTags(postUpdateDTO.getTags());
+        postFromDB.setCategory(postUpdateDTO.getCategory());
+        Post savedPost =  blogPostService.updatePost(id, postFromDB);
+        return PostMapper.toResponseDTO(savedPost);
     }
 
     @PatchMapping("/{id}")

@@ -39,7 +39,7 @@ public class BlogPostService implements PostService{
 
     @Override
     public Post updatePost(Long id, Post post) {
-        return null;
+        return blogPostRepository.save(post);
     }
 
     @Override

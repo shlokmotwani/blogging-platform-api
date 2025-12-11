@@ -1,20 +1,9 @@
 package com.example.blogging_platform.dtos;
-import com.example.blogging_platform.models.Tag;
 import lombok.Getter;
 import lombok.Setter;
-import org.jspecify.annotations.NonNull;
-
-import java.util.List;
 
 @Getter
 @Setter
-public class PostCreateDTO {
-    @NonNull
-    private String title;
+public class PostCreateDTO extends PostBaseDTO{
 
-    @NonNull
-    private String content;
-
-    private String category;
-    private List<Tag> tags;
 }

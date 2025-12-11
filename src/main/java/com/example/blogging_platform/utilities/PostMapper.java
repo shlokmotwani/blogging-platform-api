@@ -1,7 +1,9 @@
 package com.example.blogging_platform.utilities;
 
+import com.example.blogging_platform.dtos.PostBaseDTO;
 import com.example.blogging_platform.dtos.PostCreateDTO;
 import com.example.blogging_platform.dtos.PostResponseDTO;
+import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.models.Post;
 
 import java.util.Collections;
@@ -10,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class PostMapper {
 
-    public static Post toEntity(PostCreateDTO dto){
+    public static <T extends PostBaseDTO> Post toEntity(T dto){
         Post entity = new Post();
         entity.setTitle(dto.getTitle());
         entity.setContent(dto.getContent());

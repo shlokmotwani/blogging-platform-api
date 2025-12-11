@@ -4,5 +4,5 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PostResponseDTO extends PostBaseDTO{
+public class PostUpdateDTO extends PostBaseDTO{
 }
