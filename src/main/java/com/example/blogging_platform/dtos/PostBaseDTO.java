@@ -15,5 +15,5 @@ public class PostBaseDTO {
     private String content;
 
     private String category;
-    private List<Tag> tags;
+    private List<String> tagNames;
 }

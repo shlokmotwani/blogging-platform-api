@@ -1,6 +1,8 @@
 package com.example.blogging_platform.services;
 
+import com.example.blogging_platform.dtos.PostCreateDTO;
 import com.example.blogging_platform.dtos.PostPatchDTO;
+import com.example.blogging_platform.dtos.PostResponseDTO;
 import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
@@ -10,6 +12,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,29 +26,39 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public Post createPost(Post post) throws BadRequestException {
-        if(post.getTitle() == null || post.getContent() == null){
+    public PostResponseDTO createPost(PostCreateDTO postCreateDTO) throws BadRequestException {
+        if(postCreateDTO.getTitle() == null || postCreateDTO.getContent() == null){
             throw new BadRequestException(String.format("Invalid input"));
         }
-        return blogPostRepository.save(post);
+        // DTO -> Entity
+        Post postEntity = PostMapper.toEntity(postCreateDTO);
+        // Entity -> gets saved in the DB
+        Post savedPost = blogPostRepository.save(postEntity);
+
+        return PostMapper.toResponseDTO(savedPost);
     }
 
     @Override
-    public Post getPostById(Long id) throws PostNotFoundException {
+    public PostResponseDTO getPostById(Long id) throws PostNotFoundException {
         Optional<Post> postOptional =  blogPostRepository.findById(id);
         if(postOptional.isEmpty()){
             throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
         }
-        return postOptional.get();
+        return PostMapper.toResponseDTO(postOptional.get());
     }
 
     @Override
-    public List<Post> getAllPosts() {
-        return blogPostRepository.findAll();
+    public List<PostResponseDTO> getAllPosts() {
+        List<Post> posts = blogPostRepository.findAll();
+        List<PostResponseDTO> postDTOList= new ArrayList<>();
+        for(Post post: posts){
+            postDTOList.add(PostMapper.toResponseDTO(post));
+        }
+        return postDTOList;
     }
 
     @Override
-    public Post updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
+    public PostResponseDTO updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
         Optional<Post> postOptional = blogPostRepository.findById(id);
         if(postOptional.isEmpty()){
             throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
@@ -53,13 +66,13 @@ public class BlogPostService implements PostService{
         Post postFromDB = postOptional.get();
         postFromDB.setTitle(postUpdateDTO.getTitle());
         postFromDB.setContent(postUpdateDTO.getContent());
-        postFromDB.setTags(postUpdateDTO.getTags());
+//        postFromDB.setTags(postUpdateDTO.getTagNames());
         postFromDB.setCategory(postUpdateDTO.getCategory());
-        return blogPostRepository.save(postFromDB);
+        return PostMapper.toResponseDTO(blogPostRepository.save(postFromDB));
     }
 
     @Override
-    public Post patchPost(Long id, PostPatchDTO postPatchDTO) throws PostNotFoundException {
+    public PostResponseDTO patchPost(Long id, PostPatchDTO postPatchDTO) throws PostNotFoundException {
         Optional<Post> postOptional = blogPostRepository.findById(id);
         if(postOptional.isEmpty()){
             throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
@@ -74,10 +87,10 @@ public class BlogPostService implements PostService{
         if(postPatchDTO.getCategory() != null){
             postFromDB.setCategory(postPatchDTO.getCategory());
         }
-        if(postPatchDTO.getTags() != null){
-            postFromDB.setTags(postPatchDTO.getTags());
-        }
-        return blogPostRepository.save(postFromDB);
+//        if(postPatchDTO.getTags() != null){
+//            postFromDB.setTags(postPatchDTO.getTags());
+//        }
+        return PostMapper.toResponseDTO(blogPostRepository.save(postFromDB));
     }
 
     @Override

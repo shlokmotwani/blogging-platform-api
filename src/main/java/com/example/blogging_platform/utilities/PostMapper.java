@@ -1,12 +1,8 @@
 package com.example.blogging_platform.utilities;
 
 import com.example.blogging_platform.dtos.PostBaseDTO;
-import com.example.blogging_platform.dtos.PostCreateDTO;
 import com.example.blogging_platform.dtos.PostResponseDTO;
-import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.models.Post;
-
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,7 +13,6 @@ public class PostMapper {
         entity.setTitle(dto.getTitle());
         entity.setContent(dto.getContent());
         entity.setCategory(dto.getCategory());
-        entity.setTags(dto.getTags());
 
         return entity;
     }
@@ -27,7 +22,6 @@ public class PostMapper {
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());
         dto.setCategory(entity.getCategory());
-        dto.setTags(entity.getTags());
 
         return dto;
     }
