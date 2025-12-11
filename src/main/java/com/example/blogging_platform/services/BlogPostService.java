@@ -1,12 +1,22 @@
 package com.example.blogging_platform.services;
 
 import com.example.blogging_platform.models.Post;
+import com.example.blogging_platform.repositories.BlogRepository;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Service;
 
+@Service
+@Primary
 public class BlogPostService implements PostService{
+    private BlogRepository blogRepository;
+
+    public BlogPostService(BlogRepository blogRepository){
+        this.blogRepository = blogRepository;
+    }
 
     @Override
     public Post createPost(Post post) {
-        return null;
+        return blogRepository.save(post);
     }
 
     @Override
