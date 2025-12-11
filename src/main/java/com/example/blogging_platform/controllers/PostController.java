@@ -2,6 +2,7 @@ package com.example.blogging_platform.controllers;
 
 import com.example.blogging_platform.dtos.PostCreateDTO;
 import com.example.blogging_platform.dtos.PostResponseDTO;
+import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
 import com.example.blogging_platform.services.BlogPostService;
 import com.example.blogging_platform.utilities.PostMapper;
@@ -28,8 +29,9 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public Post getPostById(@PathVariable("id") Long id){
-        return null;
+    public PostResponseDTO getPostById(@PathVariable("id") Long id) throws PostNotFoundException {
+        Post postEntity = blogPostService.getPostById(id);
+        return PostMapper.toResponseDTO(postEntity);
     }
 
     @GetMapping()

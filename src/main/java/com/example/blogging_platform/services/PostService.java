@@ -1,12 +1,13 @@
 package com.example.blogging_platform.services;
 
+import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
 
 public interface PostService {
-    public Post createPost(Post post);
-    public Post getPost(Long id);
-    public Post getAllPosts();
-    public Post updatePost(Long id, Post post);
-    public Post patchPost(Long id, Post post);
-    public Post deletePost(Long id);
+    Post createPost(Post post);
+    Post getPostById(Long id) throws PostNotFoundException;
+    Post getAllPosts();
+    Post updatePost(Long id, Post post);
+    Post patchPost(Long id, Post post);
+    Post deletePost(Long id);
 }

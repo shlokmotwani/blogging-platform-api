@@ -1,9 +1,12 @@
 package com.example.blogging_platform.services;
 
+import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
 import com.example.blogging_platform.repositories.BlogRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 @Primary
@@ -20,8 +23,12 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public Post getPost(Long id) {
-        return null;
+    public Post getPostById(Long id) throws PostNotFoundException {
+        Optional<Post> postOptional =  blogRepository.findById(id);
+        if(postOptional == null){
+            throw new PostNotFoundException(String.format("Post with id: %d does not exist."));
+        }
+        return postOptional.get();
     }
 
     @Override
