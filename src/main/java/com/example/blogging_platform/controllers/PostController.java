@@ -45,12 +45,7 @@ public class PostController {
 
     @PutMapping("/{id}")
     public PostResponseDTO updatePost(@PathVariable("id") Long id, @RequestBody PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
-        Post postFromDB = blogPostService.getPostById(id);
-        postFromDB.setTitle(postUpdateDTO.getTitle());
-        postFromDB.setContent(postUpdateDTO.getContent());
-        postFromDB.setTags(postUpdateDTO.getTags());
-        postFromDB.setCategory(postUpdateDTO.getCategory());
-        Post savedPost =  blogPostService.updatePost(id, postFromDB);
+        Post savedPost =  blogPostService.updatePost(id, postUpdateDTO);
         return PostMapper.toResponseDTO(savedPost);
     }
 

@@ -1,9 +1,11 @@
 package com.example.blogging_platform.services;
 
 import com.example.blogging_platform.dtos.PostPatchDTO;
+import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
 import com.example.blogging_platform.repositories.BlogPostRepository;
+import com.example.blogging_platform.utilities.PostMapper;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -39,8 +41,17 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public Post updatePost(Long id, Post post) {
-        return blogPostRepository.save(post);
+    public Post updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
+        Optional<Post> postOptional = blogPostRepository.findById(id);
+        if(postOptional.isEmpty()){
+            throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
+        }
+        Post postFromDB = postOptional.get();
+        postFromDB.setTitle(postUpdateDTO.getTitle());
+        postFromDB.setContent(postUpdateDTO.getContent());
+        postFromDB.setTags(postUpdateDTO.getTags());
+        postFromDB.setCategory(postUpdateDTO.getCategory());
+        return blogPostRepository.save(postFromDB);
     }
 
     @Override
