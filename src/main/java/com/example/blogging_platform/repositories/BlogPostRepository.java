@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface BlogRepository extends JpaRepository<Post, Long> {
+public interface BlogPostRepository extends JpaRepository<Post, Long> {
 
     @Override
     public Post save(Post post);

@@ -2,7 +2,7 @@ package com.example.blogging_platform.services;
 
 import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
-import com.example.blogging_platform.repositories.BlogRepository;
+import com.example.blogging_platform.repositories.BlogPostRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
@@ -11,22 +11,22 @@ import java.util.Optional;
 @Service
 @Primary
 public class BlogPostService implements PostService{
-    private BlogRepository blogRepository;
+    private BlogPostRepository blogPostRepository;
 
-    public BlogPostService(BlogRepository blogRepository){
-        this.blogRepository = blogRepository;
+    public BlogPostService(BlogPostRepository blogPostRepository){
+        this.blogPostRepository = blogPostRepository;
     }
 
     @Override
     public Post createPost(Post post) {
-        return blogRepository.save(post);
+        return blogPostRepository.save(post);
     }
 
     @Override
     public Post getPostById(Long id) throws PostNotFoundException {
-        Optional<Post> postOptional =  blogRepository.findById(id);
-        if(postOptional == null){
-            throw new PostNotFoundException(String.format("Post with id: %d does not exist."));
+        Optional<Post> postOptional =  blogPostRepository.findById(id);
+        if(postOptional.isEmpty()){
+            throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
         }
         return postOptional.get();
     }
