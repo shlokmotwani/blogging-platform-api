@@ -7,9 +7,11 @@ import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.services.BlogPostService;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -33,10 +35,19 @@ public class PostController {
         return blogPostService.getPostById(id);
     }
 
+//    @GetMapping()
+//    @ResponseStatus(HttpStatus.OK)
+//    public List<PostResponseDTO> getAllPosts(){
+//        return blogPostService.getAllPosts();
+//    }
+
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<PostResponseDTO> getAllPosts(){
-        return blogPostService.getAllPosts();
+    public List<PostResponseDTO> getFilteredPosts(@RequestParam(value = "searchTerm", required = false) String searchTerm){
+        if(searchTerm == null || searchTerm.isBlank()){
+            return blogPostService.getAllPosts();
+        }
+        return blogPostService.getFilteredPosts(searchTerm);
     }
 
     @PutMapping("/{id}")

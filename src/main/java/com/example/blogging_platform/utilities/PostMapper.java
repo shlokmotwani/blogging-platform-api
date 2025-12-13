@@ -3,12 +3,14 @@ package com.example.blogging_platform.utilities;
 import com.example.blogging_platform.dtos.PostBaseDTO;
 import com.example.blogging_platform.dtos.PostResponseDTO;
 import com.example.blogging_platform.models.Post;
+import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class PostMapper {
 
-    public static <T extends PostBaseDTO> Post toEntity(T dto){
+    public <T extends PostBaseDTO> Post toEntity(T dto){
         Post entity = new Post();
         entity.setTitle(dto.getTitle());
         entity.setContent(dto.getContent());
@@ -17,7 +19,7 @@ public class PostMapper {
         return entity;
     }
 
-    public static PostResponseDTO toResponseDTO(Post entity){
+    public PostResponseDTO toResponseDTO(Post entity){
         PostResponseDTO dto = new PostResponseDTO();
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());
@@ -26,7 +28,7 @@ public class PostMapper {
         return dto;
     }
 
-    public static List<PostResponseDTO> toListOfPostResponseDTO(List<Post> posts){
+    public List<PostResponseDTO> toListOfPostResponseDTO(List<Post> posts){
         return posts.stream().map(post -> toResponseDTO(post)).collect(Collectors.toList());
     }
 }

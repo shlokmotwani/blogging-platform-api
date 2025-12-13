@@ -10,6 +10,8 @@ import com.example.blogging_platform.repositories.BlogPostRepository;
 import com.example.blogging_platform.utilities.PostMapper;
 import org.apache.coyote.BadRequestException;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,9 +22,11 @@ import java.util.Optional;
 @Primary
 public class BlogPostService implements PostService{
     private BlogPostRepository blogPostRepository;
+    private PostMapper postMapper;
 
-    public BlogPostService(BlogPostRepository blogPostRepository){
+    public BlogPostService(BlogPostRepository blogPostRepository, PostMapper postMapper){
         this.blogPostRepository = blogPostRepository;
+        this.postMapper = postMapper;
     }
 
     @Override
@@ -31,11 +35,11 @@ public class BlogPostService implements PostService{
             throw new BadRequestException(String.format("Invalid input"));
         }
         // DTO -> Entity
-        Post postEntity = PostMapper.toEntity(postCreateDTO);
+        Post postEntity = postMapper.toEntity(postCreateDTO);
         // Entity -> gets saved in the DB
         Post savedPost = blogPostRepository.save(postEntity);
 
-        return PostMapper.toResponseDTO(savedPost);
+        return postMapper.toResponseDTO(savedPost);
     }
 
     @Override
@@ -44,7 +48,7 @@ public class BlogPostService implements PostService{
         if(postOptional.isEmpty()){
             throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
         }
-        return PostMapper.toResponseDTO(postOptional.get());
+        return postMapper.toResponseDTO(postOptional.get());
     }
 
     @Override
@@ -52,7 +56,7 @@ public class BlogPostService implements PostService{
         List<Post> posts = blogPostRepository.findAll();
         List<PostResponseDTO> postDTOList= new ArrayList<>();
         for(Post post: posts){
-            postDTOList.add(PostMapper.toResponseDTO(post));
+            postDTOList.add(postMapper.toResponseDTO(post));
         }
         return postDTOList;
     }
@@ -68,7 +72,7 @@ public class BlogPostService implements PostService{
         postFromDB.setContent(postUpdateDTO.getContent());
 //        postFromDB.setTags(postUpdateDTO.getTagNames());
         postFromDB.setCategory(postUpdateDTO.getCategory());
-        return PostMapper.toResponseDTO(blogPostRepository.save(postFromDB));
+        return postMapper.toResponseDTO(blogPostRepository.save(postFromDB));
     }
 
     @Override
@@ -90,7 +94,18 @@ public class BlogPostService implements PostService{
 //        if(postPatchDTO.getTags() != null){
 //            postFromDB.setTags(postPatchDTO.getTags());
 //        }
-        return PostMapper.toResponseDTO(blogPostRepository.save(postFromDB));
+        return postMapper.toResponseDTO(blogPostRepository.save(postFromDB));
+    }
+
+    public List<PostResponseDTO> getFilteredPosts(String searchTerm){
+//        String searchPattern = "%" + searchTerm + "%";
+//        System.out.println("DEBUG: Executing search with pattern: " + searchPattern);
+        List<Post> posts = blogPostRepository.searchAllFields(searchTerm);
+        List<PostResponseDTO> postDTOList= new ArrayList<>();
+        for(Post post: posts){
+            postDTOList.add(postMapper.toResponseDTO(post));
+        }
+        return postDTOList;
     }
 
     @Override
