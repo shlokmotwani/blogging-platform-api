@@ -25,4 +25,9 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags")
     private List<Post> posts;
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
 }

@@ -6,8 +6,10 @@ import com.example.blogging_platform.dtos.PostResponseDTO;
 import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
+import com.example.blogging_platform.models.Tag;
 import com.example.blogging_platform.repositories.BlogPostRepository;
 import com.example.blogging_platform.utilities.PostMapper;
+import com.example.blogging_platform.utilities.TagMapper;
 import org.apache.coyote.BadRequestException;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.Query;
@@ -23,10 +25,12 @@ import java.util.Optional;
 public class BlogPostService implements PostService{
     private BlogPostRepository blogPostRepository;
     private PostMapper postMapper;
+    private TagMapper tagMapper;
 
-    public BlogPostService(BlogPostRepository blogPostRepository, PostMapper postMapper){
+    public BlogPostService(BlogPostRepository blogPostRepository, PostMapper postMapper, TagMapper tagMapper){
         this.blogPostRepository = blogPostRepository;
         this.postMapper = postMapper;
+        this.tagMapper = tagMapper;
     }
 
     @Override
@@ -36,6 +40,7 @@ public class BlogPostService implements PostService{
         }
         // DTO -> Entity
         Post postEntity = postMapper.toEntity(postCreateDTO);
+
         // Entity -> gets saved in the DB
         Post savedPost = blogPostRepository.save(postEntity);
 
@@ -70,8 +75,10 @@ public class BlogPostService implements PostService{
         Post postFromDB = postOptional.get();
         postFromDB.setTitle(postUpdateDTO.getTitle());
         postFromDB.setContent(postUpdateDTO.getContent());
-//        postFromDB.setTags(postUpdateDTO.getTagNames());
         postFromDB.setCategory(postUpdateDTO.getCategory());
+
+        postFromDB.setTags(tagMapper.toTagList(postUpdateDTO.getTagNames()));
+
         return postMapper.toResponseDTO(blogPostRepository.save(postFromDB));
     }
 
