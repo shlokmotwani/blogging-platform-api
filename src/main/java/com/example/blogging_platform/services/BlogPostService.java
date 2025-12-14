@@ -98,9 +98,10 @@ public class BlogPostService implements PostService{
         if(postPatchDTO.getCategory() != null){
             postFromDB.setCategory(postPatchDTO.getCategory());
         }
-//        if(postPatchDTO.getTags() != null){
-//            postFromDB.setTags(postPatchDTO.getTags());
-//        }
+
+        if(postPatchDTO.getTagNames() != null){
+            postFromDB.setTags(tagMapper.toTagList(postPatchDTO.getTagNames()));
+        }
         return postMapper.toResponseDTO(blogPostRepository.save(postFromDB));
     }
 
