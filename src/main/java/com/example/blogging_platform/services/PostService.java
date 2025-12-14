@@ -13,7 +13,7 @@ public interface PostService {
     PostResponseDTO createPost(PostCreateDTO postCreateDTO) throws BadRequestException;
     PostResponseDTO getPostById(Long id) throws PostNotFoundException;
     List<PostResponseDTO> getAllPosts();
-    PostResponseDTO updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException;
+    PostResponseDTO updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException, BadRequestException;
     PostResponseDTO patchPost(Long id, PostPatchDTO postPatchDTO) throws PostNotFoundException;
     void deletePost(Long id) throws PostNotFoundException;
 }

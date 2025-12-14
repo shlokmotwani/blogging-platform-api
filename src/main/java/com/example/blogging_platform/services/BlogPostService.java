@@ -67,10 +67,16 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public PostResponseDTO updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
+    public PostResponseDTO updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException, BadRequestException {
         Optional<Post> postOptional = blogPostRepository.findById(id);
         if(postOptional.isEmpty()){
             throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
+        }
+        if(postUpdateDTO.getTitle() == null){
+            throw new BadRequestException(String.format("Cannot update the post without a title."));
+        }
+        if(postUpdateDTO.getContent() == null){
+            throw new BadRequestException(String.format("Cannot update the post without it's content."));
         }
         Post postFromDB = postOptional.get();
         postFromDB.setTitle(postUpdateDTO.getTitle());
