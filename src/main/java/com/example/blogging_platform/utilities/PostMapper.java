@@ -36,6 +36,8 @@ public class PostMapper {
         dto.setTitle(entity.getTitle());
         dto.setContent(entity.getContent());
         dto.setCategory(entity.getCategory());
+        dto.setCreatedAt(entity.getCreatedAt());
+        dto.setUpdatedAt(entity.getUpdatedAt());
 
         List<String> tagNames = new ArrayList<>();
         List<Tag> tagList = entity.getTags();
