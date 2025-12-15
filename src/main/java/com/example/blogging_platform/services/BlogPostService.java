@@ -6,14 +6,10 @@ import com.example.blogging_platform.dtos.PostResponseDTO;
 import com.example.blogging_platform.dtos.PostUpdateDTO;
 import com.example.blogging_platform.exceptions.PostNotFoundException;
 import com.example.blogging_platform.models.Post;
-import com.example.blogging_platform.models.Tag;
 import com.example.blogging_platform.repositories.BlogPostRepository;
 import com.example.blogging_platform.utilities.PostMapper;
 import com.example.blogging_platform.utilities.TagMapper;
-import org.apache.coyote.BadRequestException;
 import org.springframework.context.annotation.Primary;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,9 +19,9 @@ import java.util.Optional;
 @Service
 @Primary
 public class BlogPostService implements PostService{
-    private BlogPostRepository blogPostRepository;
-    private PostMapper postMapper;
-    private TagMapper tagMapper;
+    private final BlogPostRepository blogPostRepository;
+    private final PostMapper postMapper;
+    private final TagMapper tagMapper;
 
     public BlogPostService(BlogPostRepository blogPostRepository, PostMapper postMapper, TagMapper tagMapper){
         this.blogPostRepository = blogPostRepository;
@@ -34,10 +30,7 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public PostResponseDTO createPost(PostCreateDTO postCreateDTO) throws BadRequestException {
-        if(postCreateDTO.getTitle() == null || postCreateDTO.getContent() == null){
-            throw new BadRequestException(String.format("Invalid input"));
-        }
+    public PostResponseDTO createPost(PostCreateDTO postCreateDTO) {
         // DTO -> Entity
         Post postEntity = postMapper.toEntity(postCreateDTO);
 
@@ -67,17 +60,12 @@ public class BlogPostService implements PostService{
     }
 
     @Override
-    public PostResponseDTO updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException, BadRequestException {
+    public PostResponseDTO updatePost(Long id, PostUpdateDTO postUpdateDTO) throws PostNotFoundException {
         Optional<Post> postOptional = blogPostRepository.findById(id);
         if(postOptional.isEmpty()){
             throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
         }
-        if(postUpdateDTO.getTitle() == null){
-            throw new BadRequestException(String.format("Cannot update the post without a title."));
-        }
-        if(postUpdateDTO.getContent() == null){
-            throw new BadRequestException(String.format("Cannot update the post without it's content."));
-        }
+
         Post postFromDB = postOptional.get();
         postFromDB.setTitle(postUpdateDTO.getTitle());
         postFromDB.setContent(postUpdateDTO.getContent());
@@ -95,12 +83,10 @@ public class BlogPostService implements PostService{
             throw new PostNotFoundException(String.format("Post with id: %d does not exist.", id));
         }
         Post postFromDB = postOptional.get();
-        if(postPatchDTO.getTitle() != null){
-            postFromDB.setTitle(postPatchDTO.getTitle());
-        }
-        if(postPatchDTO.getContent() != null){
-            postFromDB.setContent(postPatchDTO.getContent());
-        }
+
+        postFromDB.setTitle(postPatchDTO.getTitle());
+        postFromDB.setContent(postPatchDTO.getContent());
+
         if(postPatchDTO.getCategory() != null){
             postFromDB.setCategory(postPatchDTO.getCategory());
         }
